@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes Tracker</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local styles -->
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="dark-theme">
+    <div class="glass-bg"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon"><i class="fa-solid fa-database"></i></div>
+                <div class="logo-text">
+                    <h1>BigQuery</h1>
+                    <span>Release Notes Tracker</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="refresh-btn" class="btn btn-primary" title="Refresh Release Notes">
+                    <span class="btn-text">Refresh</span>
+                    <i class="fa-solid fa-rotate spinner" id="refresh-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Search and stats bar -->
+        <div class="search-bar">
+            <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="Search updates by keyword, feature, or date...">
+            </div>
+            <div id="stats-counter" class="stats-counter">Loading releases...</div>
+        </div>
+
+        <!-- Release Notes Content -->
+        <main class="release-list" id="releases-container">
+            <!-- Dynamically populated card items -->
+            <div class="skeleton-loader">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Twitter Composer Dialog -->
+    <dialog id="tweet-dialog" class="glass-modal">
+        <div class="modal-header">
+            <h3><i class="fa-brands fa-x-twitter"></i> Share Update on X</h3>
+            <button id="close-modal-btn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="dialog-instruction">Edit your post draft below:</p>
+            <div class="tweet-composer">
+                <textarea id="tweet-textarea" rows="5" maxlength="280"></textarea>
+                <div class="char-counter"><span id="char-count">0</span>/280</div>
+            </div>
+            <div class="tweet-preview-label">Original Content Summary:</div>
+            <div id="original-note-preview" class="original-note-preview"></div>
+        </div>
+        <div class="modal-footer">
+            <button id="cancel-tweet-btn" class="btn btn-secondary">Cancel</button>
+            <button id="publish-tweet-btn" class="btn btn-twitter">
+                <i class="fa-brands fa-x-twitter"></i> Post
+            </button>
+        </div>
+    </dialog>
+
+    <!-- Local App JS -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
