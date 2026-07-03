@@ -157,8 +157,11 @@ function renderList() {
                         <span class="type-badge ${badge.class}">${badge.label}</span>
                     </div>
                     <button class="btn btn-card-action tweet-trigger" data-index="${index}">
-                        <i class="fa-brands fa-x-twitter"></i> Tweet
-                    </button>
+                    <i class="fa-brands fa-x-twitter"></i> Tweet
+                </button>
+                <button class="btn btn-card-action copy-trigger" data-index="${index}">
+                    <i class="fa-solid fa-copy"></i> Copy
+                </button>
                 </div>
                 <h2 class="card-title">${item.title}</h2>
                 <div class="card-content">${item.content}</div>
@@ -237,11 +240,75 @@ function publishTweet() {
 refreshBtn.addEventListener('click', fetchReleases);
 searchInput.addEventListener('input', applyFilterAndRender);
 
+// Export CSV button
+const exportBtn = document.getElementById('export-btn');
+exportBtn.addEventListener('click', () => {
+    const csvHeaders = ['ID', 'Title', 'Date', 'Content', 'Link'];
+    const rows = filteredReleases.map(r => [
+        r.id,
+        r.title.replace(/"/g, '\\"'),
+        r.date,
+        stripHtml(r.content).replace(/"/g, '\\"'),
+        r.link
+    ]);
+    const csvContent = [csvHeaders, ...rows]
+        .map(e => e.map(v => `"${v}"`).join(','))
+        .join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'bigquery_release_notes.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+// Theme toggle switch
+const themeToggle = document.getElementById('theme-toggle');
+const toggleLabel = document.querySelector('.toggle-label');
+function applyTheme(isLight) {
+    if (isLight) {
+        document.documentElement.classList.add('light-mode');
+        toggleLabel.textContent = 'Dark Mode';
+    } else {
+        document.documentElement.classList.remove('light-mode');
+        toggleLabel.textContent = 'Light Mode';
+    }
+}
+themeToggle.addEventListener('change', (e) => {
+    applyTheme(e.target.checked);
+});
+// Initialize based on default (dark)
+applyTheme(false);
+
 // Modal action listeners
 closeModalBtn.addEventListener('click', () => tweetDialog.close());
 cancelTweetBtn.addEventListener('click', () => tweetDialog.close());
 publishTweetBtn.addEventListener('click', publishTweet);
 tweetTextarea.addEventListener('input', updateCharCounter);
+
+// Attach copy button listeners after rendering cards
+function attachCopyListeners() {
+    document.querySelectorAll('.copy-trigger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const idx = e.currentTarget.getAttribute('data-index');
+            const item = filteredReleases[idx];
+            const text = `Title: ${stripHtml(item.title)}\nDate: ${formatDate(item.date)}\nLink: ${item.link}\n\n${stripHtml(item.content)}`;
+            navigator.clipboard.writeText(text).then(() => {
+                // optional feedback
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy'; }, 1500);
+            }).catch(err => console.error('Copy failed', err));
+        });
+    });
+}
+
+// Extend renderList to call attachCopyListeners
+const originalRenderList = renderList;
+renderList = function() {
+    originalRenderList();
+    attachCopyListeners();
+};
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', fetchReleases);

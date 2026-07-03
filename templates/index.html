@@ -13,7 +13,7 @@
     <!-- Local styles -->
     <link rel="stylesheet" href="/static/styles.css">
 </head>
-<body class="dark-theme">
+<body>
     <div class="glass-bg"></div>
     <div class="container">
         <!-- Header -->
@@ -30,6 +30,14 @@
                     <span class="btn-text">Refresh</span>
                     <i class="fa-solid fa-rotate spinner" id="refresh-icon"></i>
                 </button>
+                <button id="export-btn" class="btn btn-primary" title="Export releases to CSV">Export CSV</button>
+                <div class="theme-toggle" style="display:inline-flex; align-items:center; gap:0.5rem; margin-left:1rem;">
+                  <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                  </label>
+                  <span class="toggle-label">Light Mode</span>
+                </div>
             </div>
         </header>
 
